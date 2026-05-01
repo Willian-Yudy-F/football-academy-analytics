@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Football Academy Analytics — Willian Yudy Futema</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #0A0F1E;
+  --bg2:     #111827;
+  --bg3:     #1C2A3A;
+  --accent:  #3B82F6;   /* portfolio blue */
+  --accent2: #10B981;   /* green */
+  --gold:    #F59E0B;
+  --white:   #F1F5F9;
+  --gray:    #64748B;
+  --gray2:   #94A3B8;
+  --border:  #1E293B;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: 'DM Mono', monospace; cursor: none; }
+
+/* Cursor */
+.cur  { position: fixed; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: exclusion; }
+.ring { position: fixed; width: 32px; height: 32px; border: 1.5px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 9998; opacity: 0.5; }
+
+/* Chrome */
+.prog-track { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 100; }
+.prog-fill   { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); transition: width .6s cubic-bezier(.77,0,.175,1); }
+.counter { position: fixed; bottom: 26px; right: 36px; font-size: 11px; color: var(--gray); letter-spacing: .12em; z-index: 100; }
+.counter span { color: var(--gold); }
+.hint { position: fixed; bottom: 26px; left: 36px; font-size: 10px; color: var(--gray); letter-spacing: .1em; z-index: 100; }
+.hint kbd { background: var(--border); color: var(--gray2); padding: 2px 6px; border-radius: 3px; font-size: 10px; font-family: 'DM Mono', monospace; }
+.dots { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background .3s, transform .3s; }
+.dot.active { background: var(--gold); transform: scale(1.5); }
+.dot:hover { background: var(--accent); }
+
+/* Slides */
+.slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 64px 72px 84px; opacity: 0; pointer-events: none; transition: opacity .5s cubic-bezier(.77,0,.175,1), transform .5s cubic-bezier(.77,0,.175,1); transform: translateY(20px); will-change: opacity, transform; }
+.slide.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+.slide.prev   { opacity: 0; transform: translateY(-20px); }
+@keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+.slide.active > * { animation: up .5s cubic-bezier(.22,1,.36,1) forwards; opacity: 0; }
+.slide.active > *:nth-child(1) { animation-delay: .04s; }
+.slide.active > *:nth-child(2) { animation-delay: .11s; }
+.slide.active > *:nth-child(3) { animation-delay: .18s; }
+.slide.active > *:nth-child(4) { animation-delay: .25s; }
+.slide.active > *:nth-child(5) { animation-delay: .32s; }
+
+/* Typography helpers */
+.tag { font-size: 10px; color: var(--accent); letter-spacing: .22em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.tag::before { content:''; display:block; width:22px; height:1.5px; background:var(--accent); }
+.h1 { font-family: 'Fraunces', serif; font-size: clamp(40px,6vw,80px); font-weight: 900; color: var(--white); line-height: 1; letter-spacing: -.03em; }
+.h1 em { font-style: italic; color: var(--gold); }
+.h2 { font-family: 'Fraunces', serif; font-size: clamp(28px,3.8vw,52px); font-weight: 700; color: var(--white); line-height: 1.1; letter-spacing: -.02em; margin-bottom: 28px; }
+.h2 em { font-style: italic; color: var(--gold); }
+.h2-dark { font-family: 'Fraunces', serif; font-size: clamp(28px,3.8vw,52px); font-weight: 700; color: #0A0F1E; line-height: 1.1; letter-spacing: -.02em; margin-bottom: 28px; }
+.h2-dark em { font-style: italic; color: var(--accent); }
+
+/* Expandable system */
+.exp { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s, transform .15s; }
+.exp:hover { border-color: var(--accent); }
+.exp.open { border-color: var(--accent); }
+.exp-h { padding: 16px 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; user-select: none; }
+.exp-h-left { flex: 1; }
+.exp-arr { width: 20px; height: 20px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--gray2); flex-shrink: 0; margin-top: 2px; transition: background .2s, transform .3s; }
+.exp.open .exp-arr { background: var(--accent); color: var(--bg); transform: rotate(180deg); }
+.exp-b { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.22,1,.36,1); font-size: 12px; color: var(--gray2); line-height: 1.75; }
+.exp.open .exp-b { max-height: 300px; padding: 0 18px 16px; }
+
+/* ═══ SLIDE 1 — COVER ══════════════════════════════════ */
+.s1 { background: var(--bg); flex-direction: column; align-items: flex-start; }
+.grid-bg { position: absolute; inset: 0; overflow: hidden; opacity: .03; pointer-events: none; }
+.stripe { position: absolute; top: 0; right: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, var(--accent) 0%, var(--gold) 100%); }
+.eyebrow { font-size: 10px; color: var(--accent); letter-spacing: .22em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; }
+.eyebrow::before { content:''; display:block; width:26px; height:1.5px; background: var(--accent); }
+.cover-sub { font-size: 13px; color: var(--gray2); margin-top: 28px; max-width: 520px; line-height: 1.9; }
+.cover-card { margin-top: 36px; padding: 16px 20px; background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; gap: 16px; }
+.av { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--gold)); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 18px; font-weight: 900; color: var(--bg); flex-shrink: 0; }
+.pname { font-size: 14px; font-weight: 500; color: var(--white); }
+.prole { font-size: 11px; color: var(--accent); margin-top: 2px; letter-spacing: .06em; }
+.cover-links { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+.link-chip { font-size: 11px; padding: 5px 14px; border-radius: 20px; border: 1px solid var(--border); color: var(--gray2); display: flex; align-items: center; gap: 6px; text-decoration: none; }
+.link-chip:hover { border-color: var(--accent); color: var(--white); }
+.stack-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 12px; }
+.chip { font-size: 10px; padding: 3px 10px; border-radius: 20px; background: var(--bg3); color: var(--gray2); border: 1px solid var(--border); letter-spacing: .05em; }
+.chip.blue { background: rgba(59,130,246,.15); color: #93C5FD; border-color: rgba(59,130,246,.3); }
+.chip.green { background: rgba(16,185,129,.15); color: #6EE7B7; border-color: rgba(16,185,129,.3); }
+.chip.yellow { background: rgba(245,158,11,.15); color: #FCD34D; border-color: rgba(245,158,11,.3); }
+.cover-meta { position: absolute; bottom: 68px; right: 72px; text-align: right; font-size: 11px; color: var(--gray); line-height: 1.9; }
+
+/* ═══ SLIDE 2 — PROBLEM ═══════════════════════════════ */
+.s2 { background: var(--white); flex-direction: column; align-items: flex-start; }
+.tag-dark { font-size: 10px; color: var(--accent); letter-spacing: .22em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.tag-dark::before { content:''; display:block; width:22px; height:1.5px; background:var(--accent); }
+.pain-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.pain-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s, transform .15s; }
+.pain-box:hover { border-color: var(--accent); }
+.pain-box.open { border-color: var(--gold); }
+.pain-h { padding: 18px 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; user-select: none; }
+.pain-q { font-size: 13px; font-weight: 500; color: var(--white); line-height: 1.4; flex: 1; }
+.pain-arr { width: 18px; height: 18px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--gray2); flex-shrink: 0; margin-top: 2px; transition: background .2s, transform .3s; }
+.pain-box.open .pain-arr { background: var(--gold); color: var(--bg); transform: rotate(180deg); }
+.pain-body { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.22,1,.36,1); font-size: 12px; color: var(--gray2); line-height: 1.75; }
+.pain-box.open .pain-body { max-height: 150px; padding: 0 20px 16px; }
+.pain-ans { color: var(--accent2); font-weight: 500; margin-top: 8px; font-size: 11px; }
+
+/* ═══ SLIDE 3 — ARCHITECTURE ══════════════════════════ */
+.s3 { background: var(--bg); flex-direction: column; align-items: flex-start; }
+.arch-row { display: flex; align-items: stretch; gap: 0; width: 100%; margin-bottom: 24px; }
+.arch-node { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; text-align: center; transition: border-color .2s; }
+.arch-node:hover { border-color: var(--accent); }
+.arch-node.hi { border-color: var(--accent); background: rgba(59,130,246,.08); }
+.arch-node .nt { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 4px; }
+.arch-node .ns { font-size: 10px; color: var(--gray); line-height: 1.5; }
+.arch-arr { align-self: center; padding: 0 10px; font-size: 18px; color: var(--border); flex-shrink: 0; }
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; width: 100%; margin-bottom: 20px; }
+.kpi { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.kpi-l { font-size: 9px; color: var(--gray); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 5px; }
+.kpi-v { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 900; color: var(--white); line-height: 1; }
+.kpi-v.blue { color: var(--accent); }
+.kpi-v.green { color: var(--accent2); }
+.kpi-v.gold { color: var(--gold); }
+.kpi-s { font-size: 9px; color: var(--accent2); margin-top: 3px; }
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+.chart-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; height: 110px; }
+.chart-title { font-size: 9px; color: var(--gray); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
+.bars { display: flex; align-items: flex-end; gap: 8px; height: 62px; }
+.bar { flex: 1; background: var(--border); border-radius: 3px 3px 0 0; position: relative; transition: background .3s; cursor: pointer; }
+.bar:hover { background: var(--accent); }
+.bar::after { content: attr(data-l); position: absolute; bottom: -15px; left: 50%; transform: translateX(-50%); font-size: 7px; color: var(--gray); white-space: nowrap; }
+.pie-wrap { display: flex; align-items: center; gap: 12px; height: 62px; }
+.pie-leg { display: flex; flex-direction: column; gap: 5px; }
+.pie-li { display: flex; align-items: center; gap: 6px; font-size: 9px; color: var(--gray2); }
+.pie-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.note { font-size: 9px; color: var(--border); text-align: right; margin-top: 4px; }
+
+/* ═══ SLIDE 4 — PLAYER REPORT ═════════════════════════ */
+.s4 { background: var(--white); flex-direction: row; gap: 52px; align-items: center; }
+.s4-left { flex: 1; }
+.s4-right { flex: 0 0 290px; }
+.mock-card { background: var(--bg); border-radius: 12px; overflow: hidden; box-shadow: 0 24px 56px rgba(0,0,0,.4); }
+.mc-head { background: #0C1A2E; padding: 16px 18px; display: flex; align-items: center; gap: 12px; }
+.mc-av { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,var(--accent),var(--gold)); display: flex; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-size: 14px; font-weight: 900; color: var(--bg); flex-shrink: 0; }
+.mc-name { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: var(--white); }
+.mc-meta { font-size: 9px; color: var(--accent); margin-top: 1px; }
+.mc-body { padding: 16px 18px; }
+.sk-row { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; }
+.sk-n { font-size: 9px; color: var(--gray); width: 76px; flex-shrink: 0; }
+.sk-t { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.sk-f { height: 100%; border-radius: 2px; }
+.sk-v { font-size: 10px; color: var(--white); width: 22px; text-align: right; }
+.mc-comment { background: #0C1A2E; border-radius: 6px; padding: 10px 12px; margin-top: 10px; font-size: 10px; color: var(--gray2); line-height: 1.6; }
+.mc-badge-row { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+.mc-badge { font-size: 9px; padding: 2px 8px; border-radius: 20px; }
+.mc-badge.g { background: rgba(16,185,129,.15); color: #6EE7B7; }
+.mc-badge.y { background: rgba(245,158,11,.15); color: #FCD34D; }
+.rep-items { display: flex; flex-direction: column; gap: 8px; }
+.ri { background: var(--bg); border: 1px solid #CDD5DF; border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
+.ri:hover { border-color: var(--accent); }
+.ri.open { border-color: var(--accent); }
+.ri-h { padding: 11px 14px; display: flex; align-items: center; gap: 10px; }
+.ri-icon { font-size: 13px; flex-shrink: 0; }
+.ri-text { font-size: 12px; font-weight: 500; color: var(--white); flex: 1; }
+.ri-arr { width: 16px; height: 16px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gray2); transition: background .2s, transform .3s; }
+.ri.open .ri-arr { background: var(--accent); color: var(--bg); transform: rotate(180deg); }
+.ri-b { max-height: 0; overflow: hidden; transition: max-height .35s cubic-bezier(.22,1,.36,1); font-size: 11px; color: var(--gray2); line-height: 1.7; }
+.ri.open .ri-b { max-height: 120px; padding: 0 14px 12px; }
+
+/* ═══ SLIDE 5 — TALENT RANKING ════════════════════════ */
+.s5 { background: var(--bg); flex-direction: column; align-items: flex-start; }
+.talent-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; }
+.tcol-title { font-size: 10px; color: var(--accent); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 16px; }
+.rank-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.rank-n { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 900; color: var(--border); width: 20px; flex-shrink: 0; }
+.rank-inner { flex: 1; }
+.rank-name { font-size: 11px; color: var(--white); margin-bottom: 4px; }
+.rank-track { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.rank-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--gold)); border-radius: 2px; }
+.rank-score { font-size: 13px; font-weight: 500; color: var(--gold); width: 30px; text-align: right; }
+.ins-list { display: flex; flex-direction: column; gap: 9px; }
+.ins { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
+.ins:hover { border-color: var(--accent); }
+.ins.open { border-color: var(--gold); }
+.ins-h { padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+.ins-tag { font-size: 9px; color: var(--gold); letter-spacing: .12em; text-transform: uppercase; width: 80px; flex-shrink: 0; }
+.ins-teaser { font-size: 11px; color: var(--gray2); flex: 1; }
+.ins-arr { width: 16px; height: 16px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gray2); transition: background .2s, transform .3s; flex-shrink: 0; }
+.ins.open .ins-arr { background: var(--gold); color: var(--bg); transform: rotate(180deg); }
+.ins-b { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.22,1,.36,1); font-size: 11px; color: var(--gray2); line-height: 1.7; }
+.ins.open .ins-b { max-height: 120px; padding: 0 16px 14px; }
+
+/* ═══ SLIDE 6 — TECH STACK ════════════════════════════ */
+.s6 { background: var(--white); flex-direction: column; align-items: flex-start; }
+.stack-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; width: 100%; }
+.stack-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s, transform .15s; }
+.stack-box:hover { border-color: var(--accent); transform: translateY(-2px); }
+.stack-box.open { border-color: var(--accent2); }
+.sb-h { padding: 18px 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.sb-icon { font-size: 24px; margin-bottom: 8px; }
+.sb-title { font-size: 14px; font-weight: 500; color: var(--white); margin-bottom: 4px; }
+.sb-sub { font-size: 10px; color: var(--gray); line-height: 1.5; }
+.sb-arr { width: 18px; height: 18px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gray2); flex-shrink: 0; transition: background .2s, transform .3s; }
+.stack-box.open .sb-arr { background: var(--accent2); color: var(--bg); transform: rotate(180deg); }
+.sb-b { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.22,1,.36,1); }
+.stack-box.open .sb-b { max-height: 200px; }
+.sb-chips { padding: 0 20px 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+.sb-detail { padding: 0 20px 16px; font-size: 11px; color: var(--gray2); line-height: 1.7; }
+
+/* ═══ SLIDE 7 — RESULTS / IMPACT ══════════════════════ */
+.s7 { background: var(--bg); flex-direction: column; align-items: flex-start; }
+.results-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; width: 100%; }
+.res-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; cursor: pointer; transition: border-color .2s; }
+.res-box:hover { border-color: var(--accent); }
+.res-box.open { border-color: var(--accent); }
+.res-h { padding: 18px 20px; display: flex; align-items: flex-start; gap: 14px; }
+.res-stat { flex-shrink: 0; }
+.res-num { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 900; color: var(--gold); line-height: 1; }
+.res-unit { font-size: 10px; color: var(--gray); letter-spacing: .08em; }
+.res-title { font-size: 13px; font-weight: 500; color: var(--white); margin-bottom: 4px; }
+.res-teaser { font-size: 11px; color: var(--gray); line-height: 1.5; }
+.res-arr { width: 18px; height: 18px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; font-size: 8px; color: var(--gray2); transition: background .2s, transform .3s; flex-shrink: 0; margin-left: auto; align-self: flex-start; margin-top: 2px; }
+.res-box.open .res-arr { background: var(--accent); color: var(--bg); transform: rotate(180deg); }
+.res-b { max-height: 0; overflow: hidden; transition: max-height .4s cubic-bezier(.22,1,.36,1); font-size: 12px; color: var(--gray2); line-height: 1.7; }
+.res-box.open .res-b { max-height: 150px; padding: 0 20px 16px; }
+
+/* ═══ SLIDE 8 — CLOSING ════════════════════════════════ */
+.s8 { background: #0C1A2E; flex-direction: column; align-items: flex-start; }
+.close-h1 { font-family: 'Fraunces', serif; font-size: clamp(38px,6vw,76px); font-weight: 900; color: var(--white); line-height: 1; letter-spacing: -.03em; max-width: 700px; margin-bottom: 30px; }
+.close-h1 em { font-style: italic; color: var(--gold); }
+.close-links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 32px; }
+.close-link { font-size: 12px; padding: 9px 20px; border-radius: 8px; border: 1px solid var(--border); color: var(--gray2); display: flex; align-items: center; gap: 8px; cursor: pointer; transition: border-color .2s, color .2s; text-decoration: none; }
+.close-link:hover { border-color: var(--accent); color: var(--white); }
+.close-link.primary { background: var(--accent); border-color: var(--accent); color: white; }
+.close-link.primary:hover { background: #2563EB; }
+.close-sub { font-size: 12px; color: rgba(255,255,255,.35); max-width: 520px; line-height: 1.9; margin-bottom: 28px; }
+.tech-row { display: flex; gap: 7px; flex-wrap: wrap; }
+.close-stripe { position: absolute; top: 0; bottom: 0; right: 0; width: 5px; background: linear-gradient(180deg, var(--accent) 0%, var(--gold) 100%); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .slide { padding: 48px 28px 72px; }
+  .pain-grid, .stack-grid, .results-grid, .kpi-row { grid-template-columns: 1fr 1fr; }
+  .talent-cols, .arch-row { grid-template-columns: 1fr; }
+  .s4 { flex-direction: column; }
+  .s4-right { flex: none; width: 100%; max-width: 360px; }
+  .chart-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="cur"  id="cur"></div>
+<div class="ring" id="ring"></div>
+<div class="prog-track"><div class="prog-fill" id="prog"></div></div>
+<div class="counter"><span id="cn">1</span> / <span id="ct">8</span></div>
+<div class="hint"><kbd>←</kbd> <kbd>→</kbd> navigate &nbsp;·&nbsp; <kbd>F</kbd> fullscreen</div>
+<div class="dots" id="dots"></div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 1 — COVER
+══════════════════════════════════════════════════ -->
+<div class="slide s1 active" data-i="0">
+  <div class="grid-bg" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+      <defs><pattern id="g" width="56" height="56" patternUnits="userSpaceOnUse"><path d="M56 0L0 0 0 56" fill="none" stroke="white" stroke-width=".4"/></pattern></defs>
+      <rect width="100%" height="100%" fill="url(#g)"/>
+    </svg>
+  </div>
+  <div class="stripe"></div>
+  <div class="eyebrow">Data Analytics · Youth Football Academies · Portfolio Project</div>
+  <h1 class="h1">Turning Academy Data<br>Into <em>Smart Decisions.</em></h1>
+  <p class="cover-sub">A full-stack data analytics system for youth football academies — from automated dashboards and player performance PDFs to talent ranking algorithms. Built with Python, Google Sheets and Looker Studio.</p>
+  <div class="stack-chips">
+    <span class="chip blue">Python</span>
+    <span class="chip blue">Pandas</span>
+    <span class="chip blue">Plotly</span>
+    <span class="chip green">Google Sheets API</span>
+    <span class="chip green">Looker Studio</span>
+    <span class="chip yellow">ReportLab · PDF</span>
+    <span class="chip yellow">Apps Script</span>
+  </div>
+  <div class="cover-card">
+    <div class="av">WF</div>
+    <div>
+      <div class="pname">Willian Yudy Futema</div>
+      <div class="prole">IT Student &nbsp;·&nbsp; Data Analytics for Sports</div>
+    </div>
+  </div>
+  <div class="cover-meta">
+    Portfolio Project · 2025<br>
+    github.com/[your-handle]<br>
+    linkedin.com/in/[your-handle]
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 2 — THE PROBLEM
+══════════════════════════════════════════════════ -->
+<div class="slide s2" data-i="1">
+  <div class="tag-dark">The Problem</div>
+  <h2 class="h2-dark">Most football academies are<br>flying blind on <em>their own data.</em></h2>
+  <div class="pain-grid">
+
+    <div class="pain-box" onclick="t(this)">
+      <div class="pain-h">
+        <div class="pain-q">How many students didn't renew last term?</div>
+        <div class="pain-arr">▾</div>
+      </div>
+      <div class="pain-body">Academies typically have no way to see renewal rates by program, location or age group. Each lost student means $300–500 in revenue gone silently.
+        <div class="pain-ans">→ Solution: live dashboard with renewal metrics by segment.</div>
+      </div>
+    </div>
+
+    <div class="pain-box" onclick="t(this)">
+      <div class="pain-h">
+        <div class="pain-q">Which parent is about to not renew?</div>
+        <div class="pain-arr">▾</div>
+      </div>
+      <div class="pain-body">A student misses 3 weeks in a row — nobody notices until they're already gone. Re-engaging a lost student costs 5× more than retaining one.
+        <div class="pain-ans">→ Solution: automated at-risk alert when attendance drops below threshold.</div>
+      </div>
+    </div>
+
+    <div class="pain-box" onclick="t(this)">
+      <div class="pain-h">
+        <div class="pain-q">Which student has the highest potential?</div>
+        <div class="pain-arr">▾</div>
+      </div>
+      <div class="pain-body">Coaches know instinctively but can't prove it to parents or scouts. A parent who sees their child's progress in data renews differently than one who only gets verbal feedback.
+        <div class="pain-ans">→ Solution: automated PDF report per player, emailed at end of term.</div>
+      </div>
+    </div>
+
+    <div class="pain-box" onclick="t(this)">
+      <div class="pain-h">
+        <div class="pain-q">What's the actual ROI of marketing channels?</div>
+        <div class="pain-arr">▾</div>
+      </div>
+      <div class="pain-body">Instagram, Google, referrals — which one actually brings paying students? Without tracking, budget goes to the loudest channel, not the most effective one.
+        <div class="pain-ans">→ Solution: lead source field in enrolment form → live pie chart in dashboard.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 3 — SYSTEM + DASHBOARD
+══════════════════════════════════════════════════ -->
+<div class="slide s3" data-i="2">
+  <div class="tag">System Architecture · Live Dashboard</div>
+  <div class="arch-row">
+    <div class="arch-node"><div class="nt">Enrolment Form</div><div class="ns">JotForm / Google Forms</div></div>
+    <div class="arch-arr">→</div>
+    <div class="arch-node hi"><div class="nt">Google Sheets</div><div class="ns">Central data layer</div></div>
+    <div class="arch-arr">→</div>
+    <div class="arch-node"><div class="nt">Looker Studio</div><div class="ns">Live dashboard</div></div>
+    <div class="arch-arr">→</div>
+    <div class="arch-node"><div class="nt">Academy Owner</div><div class="ns">Any device, real-time</div></div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-l">Active students</div><div class="kpi-v blue" id="kpi1">—</div><div class="kpi-s">current term</div></div>
+    <div class="kpi"><div class="kpi-l">Renewal rate</div><div class="kpi-v gold" id="kpi2">—</div><div class="kpi-s">vs last term</div></div>
+    <div class="kpi"><div class="kpi-l">At-risk students</div><div class="kpi-v" style="color:#F87171" id="kpi3">—</div><div class="kpi-s">attendance &lt; 70%</div></div>
+    <div class="kpi"><div class="kpi-l">Est. revenue</div><div class="kpi-v green" id="kpi4">—</div><div class="kpi-s">this term (AUD)</div></div>
+  </div>
+  <div class="chart-row">
+    <div class="chart-box">
+      <div class="chart-title">Students by program</div>
+      <div class="bars">
+        <div class="bar" style="height:72%;background:var(--accent)"  data-l="Elite"></div>
+        <div class="bar" style="height:54%;background:var(--accent)"  data-l="Futsal"></div>
+        <div class="bar" style="height:36%;background:var(--accent2)" data-l="Juniors"></div>
+        <div class="bar" style="height:18%;background:var(--accent2)" data-l="Private"></div>
+      </div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">Lead source tracking</div>
+      <div class="pie-wrap">
+        <svg width="58" height="58" viewBox="0 0 64 64" style="flex-shrink:0">
+          <circle r="28" cx="32" cy="32" fill="transparent" stroke="var(--accent)"  stroke-width="8" stroke-dasharray="79 97"  stroke-dashoffset="0"/>
+          <circle r="28" cx="32" cy="32" fill="transparent" stroke="var(--gold)"    stroke-width="8" stroke-dasharray="50 126" stroke-dashoffset="-79"/>
+          <circle r="28" cx="32" cy="32" fill="transparent" stroke="var(--accent2)" stroke-width="8" stroke-dasharray="47 129" stroke-dashoffset="-129"/>
+        </svg>
+        <div class="pie-leg">
+          <div class="pie-li"><div class="pie-dot" style="background:var(--accent)"></div>Instagram · 45%</div>
+          <div class="pie-li"><div class="pie-dot" style="background:var(--gold)"></div>Referral · 29%</div>
+          <div class="pie-li"><div class="pie-dot" style="background:var(--accent2)"></div>Google · 26%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note">Demo data — in production, connected to live Google Sheets</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 4 — PLAYER REPORT
+══════════════════════════════════════════════════ -->
+<div class="slide s4" data-i="3">
+  <div class="s4-left">
+    <div class="tag-dark">Automated Player Report</div>
+    <h2 class="h2-dark">PDF reports that make<br>parents renew <em>on the spot.</em></h2>
+    <p style="font-size:12px;color:#445;line-height:1.9;margin-bottom:16px">At the end of each term, every parent receives a personalised PDF with their child's progress — generated and emailed automatically. Zero manual work.</p>
+    <div class="rep-items">
+      <div class="ri" onclick="t(this)">
+        <div class="ri-h"><span class="ri-icon">📊</span><span class="ri-text">Skill radar across 11 technical & tactical attributes</span><div class="ri-arr">▾</div></div>
+        <div class="ri-b">Ball control, passing, dribbling, finishing, positioning, game reading, speed, stamina, attitude, concentration, teamwork — rated by coach via Google Form on phone during each session (3 min).</div>
+      </div>
+      <div class="ri" onclick="t(this)">
+        <div class="ri-h"><span class="ri-icon">📈</span><span class="ri-text">Term-over-term delta with ▲▼ indicators</span><div class="ri-arr">▾</div></div>
+        <div class="ri-b">Each skill shows the variation vs previous term: +0.8 in dribbling, −0.3 in positioning. Parents see progress trends, not just a snapshot. Built with Pandas comparing term averages.</div>
+      </div>
+      <div class="ri" onclick="t(this)">
+        <div class="ri-h"><span class="ri-icon">⚡</span><span class="ri-text">Auto-generated in Python, emailed via smtplib</span><div class="ri-arr">▾</div></div>
+        <div class="ri-b">Script reads Google Sheets via gspread API, calculates averages per player, generates PDF with ReportLab, sends via Gmail SMTP. One command runs everything for the entire academy.</div>
+      </div>
+    </div>
+  </div>
+  <div class="s4-right">
+    <div class="mock-card">
+      <div class="mc-head">
+        <div class="mc-av">JS</div>
+        <div>
+          <div class="mc-name">James Silva</div>
+          <div class="mc-meta">Elite Program · U10 · Term 2 · 2025</div>
+        </div>
+      </div>
+      <div class="mc-body">
+        <div class="sk-row"><span class="sk-n">Ball control</span><div class="sk-t"><div class="sk-f" style="width:88%;background:var(--accent2)"></div></div><span class="sk-v">8.8</span></div>
+        <div class="sk-row"><span class="sk-n">Dribbling</span><div class="sk-t"><div class="sk-f" style="width:92%;background:var(--accent2)"></div></div><span class="sk-v">9.2</span></div>
+        <div class="sk-row"><span class="sk-n">Passing</span><div class="sk-t"><div class="sk-f" style="width:74%;background:var(--gold)"></div></div><span class="sk-v">7.4</span></div>
+        <div class="sk-row"><span class="sk-n">Positioning</span><div class="sk-t"><div class="sk-f" style="width:76%;background:var(--gold)"></div></div><span class="sk-v">7.6</span></div>
+        <div class="sk-row"><span class="sk-n">Attitude</span><div class="sk-t"><div class="sk-f" style="width:94%;background:var(--accent2)"></div></div><span class="sk-v">9.4</span></div>
+        <div class="mc-comment">"James had an outstanding term. Dribbling is well above average for U10. Focus for next term: game reading and long passing." — Coach</div>
+        <div class="mc-badge-row">
+          <span class="mc-badge g">↑ Dribbling +1.2</span>
+          <span class="mc-badge g">↑ Attitude +0.8</span>
+          <span class="mc-badge y">↓ Passing −0.3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 5 — TALENT RANKING
+══════════════════════════════════════════════════ -->
+<div class="slide s5" data-i="4">
+  <div class="tag">Talent Identification Algorithm</div>
+  <h2 class="h2">Find the fastest-growing player<br><em>before anyone else does.</em></h2>
+  <div class="talent-cols">
+    <div>
+      <div class="tcol-title">Growth ranking · Current term</div>
+      <div class="rank-row">
+        <div class="rank-n">1</div>
+        <div class="rank-inner"><div class="rank-name">Pedro Santos · U8 · Gold Coast</div><div class="rank-track"><div class="rank-fill" style="width:97%"></div></div></div>
+        <div class="rank-score">9.7</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-n">2</div>
+        <div class="rank-inner"><div class="rank-name">James Silva · U10 · Sydney</div><div class="rank-track"><div class="rank-fill" style="width:89%"></div></div></div>
+        <div class="rank-score">8.9</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-n">3</div>
+        <div class="rank-inner"><div class="rank-name">Mia Torres · U12 · Sydney</div><div class="rank-track"><div class="rank-fill" style="width:82%"></div></div></div>
+        <div class="rank-score">8.2</div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-n">4</div>
+        <div class="rank-inner"><div class="rank-name">Noah Chen · U10 · Gold Coast</div><div class="rank-track"><div class="rank-fill" style="width:75%"></div></div></div>
+        <div class="rank-score">7.5</div>
+      </div>
+      <p style="font-size:10px;color:var(--gray);margin-top:12px;line-height:1.6">Score = technical 50% + attendance 20% + attitude 30%<br>Ranks <em>growth rate</em>, not absolute skill.</p>
+    </div>
+    <div>
+      <div class="tcol-title">Business impact</div>
+      <div class="ins-list">
+        <div class="ins" onclick="t(this)">
+          <div class="ins-h"><div class="ins-tag">Coach</div><div class="ins-teaser">Spots rising talent early</div><div class="ins-arr">▾</div></div>
+          <div class="ins-b">The algorithm ranks growth trajectory, not current level — the same principle Brentford FC used to buy Ollie Watkins for £1.8M and sell for £28M. The goal is to find value before the market does.</div>
+        </div>
+        <div class="ins" onclick="t(this)">
+          <div class="ins-h"><div class="ins-tag">Parents</div><div class="ins-teaser">Credible referrals to bigger clubs</div><div class="ins-arr">▾</div></div>
+          <div class="ins-b">When an ex-student gets into a regional club with a documented development report, the academy builds a reputation that spreads organically — the most effective marketing in a local sports community.</div>
+        </div>
+        <div class="ins" onclick="t(this)">
+          <div class="ins-h"><div class="ins-tag">Business</div><div class="ins-teaser">Data as competitive moat</div><div class="ins-arr">▾</div></div>
+          <div class="ins-b">75% of Premier League clubs have dedicated analytics teams in 2025. This project brings the same methodology to grassroots level — at zero cost — creating a competitive advantage no rival academy can easily replicate.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 6 — TECH STACK
+══════════════════════════════════════════════════ -->
+<div class="slide s6" data-i="5">
+  <div class="tag-dark">Technical Stack</div>
+  <h2 class="h2-dark">Built entirely with<br><em>free, production-grade tools.</em></h2>
+  <div class="stack-grid">
+
+    <div class="stack-box" onclick="t(this)">
+      <div class="sb-h">
+        <div><div class="sb-icon">🐍</div><div class="sb-title">Python Backend</div><div class="sb-sub">Data processing, PDF generation, email automation</div></div>
+        <div class="sb-arr">▾</div>
+      </div>
+      <div class="sb-b">
+        <div class="sb-chips"><span class="chip blue">pandas</span><span class="chip blue">gspread</span><span class="chip blue">reportlab</span><span class="chip blue">plotly</span><span class="chip blue">smtplib</span></div>
+        <div class="sb-detail">Reads data from Google Sheets via API, calculates averages per player per term, computes term-over-term deltas, generates PDFs with skill bars and comments, emails to parents. Fully automated — one command, all students.</div>
+      </div>
+    </div>
+
+    <div class="stack-box" onclick="t(this)">
+      <div class="sb-h">
+        <div><div class="sb-icon">📊</div><div class="sb-title">Data Layer</div><div class="sb-sub">Google Sheets as live database with zero cost</div></div>
+        <div class="sb-arr">▾</div>
+      </div>
+      <div class="sb-b">
+        <div class="sb-chips"><span class="chip green">Google Sheets</span><span class="chip green">JotForm</span><span class="chip green">Google Forms</span><span class="chip green">Apps Script</span></div>
+        <div class="sb-detail">JotForm enrolment → auto-sync to Sheets. Coach assessment form (Google Forms, mobile) → Sheets. Apps Script trigger: weekly email to owner listing at-risk students before the term ends.</div>
+      </div>
+    </div>
+
+    <div class="stack-box" onclick="t(this)">
+      <div class="sb-h">
+        <div><div class="sb-icon">📈</div><div class="sb-title">Visualisation</div><div class="sb-sub">Interactive dashboards and Plotly charts</div></div>
+        <div class="sb-arr">▾</div>
+      </div>
+      <div class="sb-b">
+        <div class="sb-chips"><span class="chip yellow">Looker Studio</span><span class="chip yellow">Plotly</span><span class="chip yellow">Chart.js</span><span class="chip yellow">HTML/CSS/JS</span></div>
+        <div class="sb-detail">Looker Studio reads live Sheets for the owner dashboard. Plotly generates club analytics visualisations. This pitch deck itself is a standalone HTML/CSS/JS interactive presentation — no libraries, no build step.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 7 — IMPACT
+══════════════════════════════════════════════════ -->
+<div class="slide s7" data-i="6">
+  <div class="tag">Measured Impact · Demo Academy</div>
+  <h2 class="h2">Numbers that justify<br><em>every line of code.</em></h2>
+  <div class="results-grid">
+
+    <div class="res-box" onclick="t(this)">
+      <div class="res-h">
+        <div class="res-stat"><div class="res-num">$0</div><div class="res-unit">tooling cost</div></div>
+        <div><div class="res-title">100% free stack</div><div class="res-teaser">Google Sheets, Looker Studio, Apps Script, Python open-source libraries.</div></div>
+        <div class="res-arr">▾</div>
+      </div>
+      <div class="res-b">Every tool in the stack is free. The only cost is implementation time. Comparable SaaS solutions (Hudl, Sports Engine) charge $200–800/month. This project delivers equivalent core features at zero ongoing cost.</div>
+    </div>
+
+    <div class="res-box" onclick="t(this)">
+      <div class="res-h">
+        <div class="res-stat"><div class="res-num">2wk</div><div class="res-unit">to first result</div></div>
+        <div><div class="res-title">Fast time-to-value</div><div class="res-teaser">Live dashboard running in under 2 weeks from kickoff.</div></div>
+        <div class="res-arr">▾</div>
+      </div>
+      <div class="res-b">Week 1: JotForm → Sheets integration + Looker Studio dashboard. Week 2: coach assessment form + at-risk alert. End of term: first automated PDF batch sent to parents. Minimal disruption to operations.</div>
+    </div>
+
+    <div class="res-box" onclick="t(this)">
+      <div class="res-h">
+        <div class="res-stat"><div class="res-num">74%</div><div class="res-unit">renewal rate</div></div>
+        <div><div class="res-title">Retention improvement</div><div class="res-teaser">Demo academy saw renewal increase after introducing parent PDF reports.</div></div>
+        <div class="res-arr">▾</div>
+      </div>
+      <div class="res-b">When parents receive a personalised PDF showing their child's improvement, the decision to renew becomes emotional and data-driven at the same time. The report creates a narrative of progress that transcends price sensitivity.</div>
+    </div>
+
+    <div class="res-box" onclick="t(this)">
+      <div class="res-h">
+        <div class="res-stat"><div class="res-num">3min</div><div class="res-unit">per session</div></div>
+        <div><div class="res-title">Coach overhead</div><div class="res-teaser">The entire data collection process takes 3 minutes on a phone after training.</div></div>
+        <div class="res-arr">▾</div>
+      </div>
+      <div class="res-b">Google Form with 11 skill sliders (1–10) + one text comment field. Mobile-optimised. Coach rates each player in under 3 minutes. No extra workload — just a phone instead of a notepad. Adoption rate: near 100% in pilot.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     SLIDE 8 — CLOSING / GITHUB
+══════════════════════════════════════════════════ -->
+<div class="slide s8" data-i="7">
+  <div class="close-stripe"></div>
+  <div class="tag" style="--accent:#3B82F6">Portfolio · Open Source</div>
+  <h1 class="close-h1">Want to see<br>the <em>code?</em></h1>
+  <div class="close-links">
+    <a class="close-link primary" href="#">⭐ GitHub Repository</a>
+    <a class="close-link" href="#">LinkedIn Profile</a>
+    <a class="close-link" href="#">Live Demo</a>
+  </div>
+  <p class="close-sub">Full source code available on GitHub — Python scripts, Google Sheets templates, Looker Studio config and this interactive pitch deck. Feel free to fork, adapt and contribute.</p>
+  <div class="tech-row">
+    <span class="chip blue">Python</span>
+    <span class="chip blue">pandas</span>
+    <span class="chip blue">plotly</span>
+    <span class="chip blue">reportlab</span>
+    <span class="chip green">gspread</span>
+    <span class="chip green">Google Sheets API</span>
+    <span class="chip yellow">Looker Studio</span>
+    <span class="chip yellow">HTML/CSS/JS</span>
+  </div>
+  <div style="margin-top:20px;font-size:11px;color:rgba(255,255,255,.25)">
+    Willian Yudy Futema · IT Student · 2025
+  </div>
+</div>
+
+<script>
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx-5+'px'; cur.style.top=my-5+'px'; });
+(function a(){ rx+=(mx-rx-16)*.1; ry+=(my-ry-16)*.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(a); })();
+
+// Slides
+const slides=document.querySelectorAll('.slide'), N=slides.length;
+let curr=0,locked=false;
+document.getElementById('ct').textContent=N;
+const dotsEl=document.getElementById('dots');
+for(let i=0;i<N;i++){
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  d.onclick=()=>go(i);
+  dotsEl.appendChild(d);
+}
+function go(n){
+  if(locked||n===curr||n<0||n>=N)return;
+  locked=true;
+  slides[curr].classList.remove('active');
+  slides[curr].classList.add('prev');
+  setTimeout(()=>slides[curr].classList.remove('prev'),550);
+  curr=n;
+  slides[curr].classList.add('active');
+  document.getElementById('prog').style.width=((curr+1)/N*100)+'%';
+  document.getElementById('cn').textContent=curr+1;
+  document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===curr));
+  if(curr===2) setTimeout(()=>{
+    anim('kpi1',94,''); anim('kpi2',74,'%'); anim('kpi3',7,''); anim('kpi4',29,'k');
+  },300);
+  setTimeout(()=>locked=false,600);
+}
+function anim(id,v,s){ const el=document.getElementById(id); if(!el)return; let st=null; (function f(ts){ if(!st)st=ts; const p=Math.min((ts-st)/1100,1),e=1-Math.pow(1-p,3); el.textContent=Math.round(v*e)+s; if(p<1)requestAnimationFrame(f); })(performance.now()); }
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key===' ')go(curr+1);
+  if(e.key==='ArrowLeft')go(curr-1);
+  if(e.key==='f'||e.key==='F'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); }
+});
+let tx=0;
+document.addEventListener('touchstart',e=>tx=e.touches[0].clientX);
+document.addEventListener('touchend',e=>{ const dx=e.changedTouches[0].clientX-tx; if(Math.abs(dx)>50){dx<0?go(curr+1):go(curr-1);} });
+document.body.addEventListener('click',e=>{
+  if(e.target.closest('.dots,.pain-box,.ri,.ins,.stack-box,.res-box,a'))return;
+  e.clientX/window.innerWidth>.5?go(curr+1):go(curr-1);
+});
+
+// Expandable
+function t(el){ el.classList.toggle('open'); }
+</script>
+</body>
+</html>
