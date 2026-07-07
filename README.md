@@ -2,7 +2,7 @@
 
 > Turning youth football academy data into smart decisions — automated dashboards, player performance PDFs and talent ranking algorithms.
 
-**Built by [Willian Yudy Futema](www.linkedin.com/in/willian-yudy-futema) · IT Student · 2026**
+**Built by [Willian Yudy Futema](https://www.linkedin.com/in/willian-yudy-futema/) · IT Student · 2026**
 
 ---
 
@@ -24,7 +24,7 @@ Most grassroots football academies run on intuition and spreadsheets. This syste
 
 A fully interactive HTML presentation that explains the system — no framework, no build step, just open in browser.
 
-**→ [View live demo](https://github.com/Willian-Yudy-F)**
+**→ [View live demo](https://willian-yudy-f.github.io/football-academy-analytics/football_academy_analytics_demo.html)**
 
 Features: keyboard navigation, expandable cards, animated KPIs, custom cursor, fullscreen mode.
 
