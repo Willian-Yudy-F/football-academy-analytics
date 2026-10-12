@@ -2,6 +2,12 @@
 
 > Turning youth football academy data into smart decisions — automated dashboards, player performance PDFs and talent ranking algorithms.
 
+
+## In plain English
+A proposal (with an interactive demo) for how a youth football academy could run on data instead of spreadsheets and gut feeling: a live dashboard for the coaches, an automatic PDF report for each player's parents at the end of term, an alert when a kid's attendance drops, and a simple ranking that rewards *improvement* rather than current level — all built on free tools (Google Sheets + Looker Studio + Python).
+
+**What I learned:** turning a business problem into a data pipeline, and presenting a technical idea to non-technical people (the demo is a self-contained HTML pitch deck).
+
 **Built by [Willian Yudy Futema](https://www.linkedin.com/in/willian-yudy-futema/) · IT Student · 2026**
 
 ---
