@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Football Academy Analytics — Willian Yudy Futema</title>
+<meta name="description" content="Interactive concept deck for a privacy-aware youth football academy analytics workflow.">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,700;0,900;1,300;1,700&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -19,11 +20,9 @@
   --border:  #1E293B;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: 'DM Mono', monospace; cursor: none; }
-
-/* Cursor */
-.cur  { position: fixed; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: exclusion; }
-.ring { position: fixed; width: 32px; height: 32px; border: 1.5px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 9998; opacity: 0.5; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: 'DM Mono', monospace; }
+.skip-link { position: fixed; top: 10px; left: 10px; z-index: 1000; padding: 10px 14px; background: var(--white); color: var(--bg); transform: translateY(-150%); }
+.skip-link:focus { transform: translateY(0); }
 
 /* Chrome */
 .prog-track { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: var(--border); z-index: 100; }
@@ -33,9 +32,10 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 .hint { position: fixed; bottom: 26px; left: 36px; font-size: 10px; color: var(--gray); letter-spacing: .1em; z-index: 100; }
 .hint kbd { background: var(--border); color: var(--gray2); padding: 2px 6px; border-radius: 3px; font-size: 10px; font-family: 'DM Mono', monospace; }
 .dots { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 100; }
-.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background .3s, transform .3s; }
+.dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--border); cursor: pointer; transition: background .3s, transform .3s; }
 .dot.active { background: var(--gold); transform: scale(1.5); }
 .dot:hover { background: var(--accent); }
+.dot:focus-visible, .pain-box:focus-visible, .ri:focus-visible, .ins:focus-visible, .stack-box:focus-visible, .res-box:focus-visible, .close-link:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
 /* Slides */
 .slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 64px 72px 84px; opacity: 0; pointer-events: none; transition: opacity .5s cubic-bezier(.77,0,.175,1), transform .5s cubic-bezier(.77,0,.175,1); transform: translateY(20px); will-change: opacity, transform; }
@@ -248,15 +248,18 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
   .s4-right { flex: none; width: 100%; max-width: 360px; }
   .chart-row { grid-template-columns: 1fr; }
 }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
 </style>
 </head>
 <body>
-<div class="cur"  id="cur"></div>
-<div class="ring" id="ring"></div>
+<a class="skip-link" href="#deck">Skip to presentation</a>
 <div class="prog-track"><div class="prog-fill" id="prog"></div></div>
 <div class="counter"><span id="cn">1</span> / <span id="ct">8</span></div>
 <div class="hint"><kbd>←</kbd> <kbd>→</kbd> navigate &nbsp;·&nbsp; <kbd>F</kbd> fullscreen</div>
 <div class="dots" id="dots"></div>
+<main id="deck">
 
 <!-- ══════════════════════════════════════════════════
      SLIDE 1 — COVER
@@ -269,9 +272,9 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
     </svg>
   </div>
   <div class="stripe"></div>
-  <div class="eyebrow">Data Analytics · Youth Football Academies · Portfolio Project</div>
-  <h1 class="h1">Turning Academy Data<br>Into <em>Smart Decisions.</em></h1>
-  <p class="cover-sub">A full-stack data analytics system for youth football academies — from automated dashboards and player performance PDFs to talent ranking algorithms. Built with Python, Google Sheets and Looker Studio.</p>
+  <div class="eyebrow">Concept Deck · Synthetic Examples · No Real Player Data</div>
+  <h1 class="h1">Exploring Academy Data<br>With <em>Human Review.</em></h1>
+  <p class="cover-sub">An interactive proposal for privacy-aware attendance reporting, progress summaries and operational dashboards. The deck is implemented; the wider data system is not.</p>
   <div class="stack-chips">
     <span class="chip blue">Python</span>
     <span class="chip blue">Pandas</span>
@@ -285,13 +288,13 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
     <div class="av">WF</div>
     <div>
       <div class="pname">Willian Yudy Futema</div>
-      <div class="prole">IT Student &nbsp;·&nbsp; Data Analytics for Sports</div>
+      <div class="prole">Bachelor of IT Student &nbsp;·&nbsp; Systems and Data Projects</div>
     </div>
   </div>
   <div class="cover-meta">
-    Portfolio Project · 2025<br>
-    github.com/[your-handle]<br>
-    linkedin.com/in/[your-handle]
+    Portfolio Concept · 2026<br>
+    github.com/Willian-Yudy-F<br>
+    linkedin.com/in/willian-yudy-futema
   </div>
 </div>
 
@@ -308,18 +311,18 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
         <div class="pain-q">How many students didn't renew last term?</div>
         <div class="pain-arr">▾</div>
       </div>
-      <div class="pain-body">Academies typically have no way to see renewal rates by program, location or age group. Each lost student means $300–500 in revenue gone silently.
-        <div class="pain-ans">→ Solution: live dashboard with renewal metrics by segment.</div>
+      <div class="pain-body">Records can sit in separate spreadsheets, making it difficult to compare participation by program or term.
+        <div class="pain-ans">→ Concept: an aggregate dashboard with clearly defined metrics.</div>
       </div>
     </div>
 
     <div class="pain-box" onclick="t(this)">
       <div class="pain-h">
-        <div class="pain-q">Which parent is about to not renew?</div>
+        <div class="pain-q">Which attendance records need a human follow-up?</div>
         <div class="pain-arr">▾</div>
       </div>
-      <div class="pain-body">A student misses 3 weeks in a row — nobody notices until they're already gone. Re-engaging a lost student costs 5× more than retaining one.
-        <div class="pain-ans">→ Solution: automated at-risk alert when attendance drops below threshold.</div>
+      <div class="pain-body">A pattern can be missed when attendance is recorded inconsistently or reviewed only at the end of a term.
+        <div class="pain-ans">→ Concept: a review queue, not an automated judgement about a child.</div>
       </div>
     </div>
 
@@ -328,18 +331,18 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
         <div class="pain-q">Which student has the highest potential?</div>
         <div class="pain-arr">▾</div>
       </div>
-      <div class="pain-body">Coaches know instinctively but can't prove it to parents or scouts. A parent who sees their child's progress in data renews differently than one who only gets verbal feedback.
-        <div class="pain-ans">→ Solution: automated PDF report per player, emailed at end of term.</div>
+      <div class="pain-body">Coach notes may be difficult to compare across sessions and can contain subjective assessments.
+        <div class="pain-ans">→ Concept: a reviewed progress summary with context and correction rights.</div>
       </div>
     </div>
 
     <div class="pain-box" onclick="t(this)">
       <div class="pain-h">
-        <div class="pain-q">What's the actual ROI of marketing channels?</div>
+        <div class="pain-q">Which enrolment sources should be investigated?</div>
         <div class="pain-arr">▾</div>
       </div>
-      <div class="pain-body">Instagram, Google, referrals — which one actually brings paying students? Without tracking, budget goes to the loudest channel, not the most effective one.
-        <div class="pain-ans">→ Solution: lead source field in enrolment form → live pie chart in dashboard.</div>
+      <div class="pain-body">Source information is only useful when definitions are consistent and collection is consented.
+        <div class="pain-ans">→ Concept: aggregate source reporting after data-quality checks.</div>
       </div>
     </div>
 
@@ -350,21 +353,21 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
      SLIDE 3 — SYSTEM + DASHBOARD
 ══════════════════════════════════════════════════ -->
 <div class="slide s3" data-i="2">
-  <div class="tag">System Architecture · Live Dashboard</div>
+  <div class="tag">Proposed Architecture · Mock Dashboard</div>
   <div class="arch-row">
-    <div class="arch-node"><div class="nt">Enrolment Form</div><div class="ns">JotForm / Google Forms</div></div>
+    <div class="arch-node"><div class="nt">Consented Form</div><div class="ns">Minimum necessary fields</div></div>
     <div class="arch-arr">→</div>
-    <div class="arch-node hi"><div class="nt">Google Sheets</div><div class="ns">Central data layer</div></div>
+    <div class="arch-node hi"><div class="nt">Controlled Dataset</div><div class="ns">Restricted access and retention</div></div>
     <div class="arch-arr">→</div>
-    <div class="arch-node"><div class="nt">Looker Studio</div><div class="ns">Live dashboard</div></div>
+    <div class="arch-node"><div class="nt">Aggregate Dashboard</div><div class="ns">No unnecessary identifiers</div></div>
     <div class="arch-arr">→</div>
-    <div class="arch-node"><div class="nt">Academy Owner</div><div class="ns">Any device, real-time</div></div>
+    <div class="arch-node"><div class="nt">Authorised Staff</div><div class="ns">Human review and corrections</div></div>
   </div>
   <div class="kpi-row">
     <div class="kpi"><div class="kpi-l">Active students</div><div class="kpi-v blue" id="kpi1">—</div><div class="kpi-s">current term</div></div>
     <div class="kpi"><div class="kpi-l">Renewal rate</div><div class="kpi-v gold" id="kpi2">—</div><div class="kpi-s">vs last term</div></div>
     <div class="kpi"><div class="kpi-l">At-risk students</div><div class="kpi-v" style="color:#F87171" id="kpi3">—</div><div class="kpi-s">attendance &lt; 70%</div></div>
-    <div class="kpi"><div class="kpi-l">Est. revenue</div><div class="kpi-v green" id="kpi4">—</div><div class="kpi-s">this term (AUD)</div></div>
+    <div class="kpi"><div class="kpi-l">Complete records</div><div class="kpi-v green" id="kpi4">—</div><div class="kpi-s">synthetic example</div></div>
   </div>
   <div class="chart-row">
     <div class="chart-box">
@@ -392,7 +395,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
       </div>
     </div>
   </div>
-  <div class="note">Demo data — in production, connected to live Google Sheets</div>
+  <div class="note">Synthetic interface values — no deployed dashboard or live academy connection</div>
 </div>
 
 <!-- ══════════════════════════════════════════════════
@@ -400,21 +403,21 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 ══════════════════════════════════════════════════ -->
 <div class="slide s4" data-i="3">
   <div class="s4-left">
-    <div class="tag-dark">Automated Player Report</div>
-    <h2 class="h2-dark">PDF reports that make<br>parents renew <em>on the spot.</em></h2>
-    <p style="font-size:12px;color:#445;line-height:1.9;margin-bottom:16px">At the end of each term, every parent receives a personalised PDF with their child's progress — generated and emailed automatically. Zero manual work.</p>
+    <div class="tag-dark">Reviewed Progress Summary · Concept</div>
+    <h2 class="h2-dark">Progress reporting with<br><em>context and safeguards.</em></h2>
+    <p style="font-size:12px;color:#445;line-height:1.9;margin-bottom:16px">A future prototype could prepare a draft summary for an authorised coach to review before a guardian receives it. No report or email workflow is implemented here.</p>
     <div class="rep-items">
       <div class="ri" onclick="t(this)">
-        <div class="ri-h"><span class="ri-icon">📊</span><span class="ri-text">Skill radar across 11 technical & tactical attributes</span><div class="ri-arr">▾</div></div>
-        <div class="ri-b">Ball control, passing, dribbling, finishing, positioning, game reading, speed, stamina, attitude, concentration, teamwork — rated by coach via Google Form on phone during each session (3 min).</div>
+        <div class="ri-h"><span class="ri-icon">📊</span><span class="ri-text">Clearly defined assessment fields</span><div class="ri-arr">▾</div></div>
+        <div class="ri-b">Each field would need a written rubric, appropriate collection frequency and a way to distinguish observation from fact.</div>
       </div>
       <div class="ri" onclick="t(this)">
-        <div class="ri-h"><span class="ri-icon">📈</span><span class="ri-text">Term-over-term delta with ▲▼ indicators</span><div class="ri-arr">▾</div></div>
-        <div class="ri-b">Each skill shows the variation vs previous term: +0.8 in dribbling, −0.3 in positioning. Parents see progress trends, not just a snapshot. Built with Pandas comparing term averages.</div>
+        <div class="ri-h"><span class="ri-icon">📈</span><span class="ri-text">Change over time with explanation</span><div class="ri-arr">▾</div></div>
+        <div class="ri-b">A score change should include sample size, missing sessions and a coach's explanation rather than implying certainty from a single number.</div>
       </div>
       <div class="ri" onclick="t(this)">
-        <div class="ri-h"><span class="ri-icon">⚡</span><span class="ri-text">Auto-generated in Python, emailed via smtplib</span><div class="ri-arr">▾</div></div>
-        <div class="ri-b">Script reads Google Sheets via gspread API, calculates averages per player, generates PDF with ReportLab, sends via Gmail SMTP. One command runs everything for the entire academy.</div>
+        <div class="ri-h"><span class="ri-icon">🔒</span><span class="ri-text">Human approval before sharing</span><div class="ri-arr">▾</div></div>
+        <div class="ri-b">A generated draft should remain private until an authorised person checks accuracy, tone, recipients and safeguarding concerns.</div>
       </div>
     </div>
   </div>
@@ -423,8 +426,8 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
       <div class="mc-head">
         <div class="mc-av">JS</div>
         <div>
-          <div class="mc-name">James Silva</div>
-          <div class="mc-meta">Elite Program · U10 · Term 2 · 2025</div>
+          <div class="mc-name">Synthetic Player A</div>
+          <div class="mc-meta">Demonstration only · no real child data</div>
         </div>
       </div>
       <div class="mc-body">
@@ -433,7 +436,7 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
         <div class="sk-row"><span class="sk-n">Passing</span><div class="sk-t"><div class="sk-f" style="width:74%;background:var(--gold)"></div></div><span class="sk-v">7.4</span></div>
         <div class="sk-row"><span class="sk-n">Positioning</span><div class="sk-t"><div class="sk-f" style="width:76%;background:var(--gold)"></div></div><span class="sk-v">7.6</span></div>
         <div class="sk-row"><span class="sk-n">Attitude</span><div class="sk-t"><div class="sk-f" style="width:94%;background:var(--accent2)"></div></div><span class="sk-v">9.4</span></div>
-        <div class="mc-comment">"James had an outstanding term. Dribbling is well above average for U10. Focus for next term: game reading and long passing." — Coach</div>
+        <div class="mc-comment">"This example shows where a reviewed coach note could appear. It is not a real assessment."</div>
         <div class="mc-badge-row">
           <span class="mc-badge g">↑ Dribbling +1.2</span>
           <span class="mc-badge g">↑ Attitude +0.8</span>
@@ -448,47 +451,47 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
      SLIDE 5 — TALENT RANKING
 ══════════════════════════════════════════════════ -->
 <div class="slide s5" data-i="4">
-  <div class="tag">Talent Identification Algorithm</div>
-  <h2 class="h2">Find the fastest-growing player<br><em>before anyone else does.</em></h2>
+  <div class="tag">Illustrative Development Score · Not Validated</div>
+  <h2 class="h2">Use scores to start a review,<br><em>not make a decision.</em></h2>
   <div class="talent-cols">
     <div>
-      <div class="tcol-title">Growth ranking · Current term</div>
+      <div class="tcol-title">Synthetic comparison · demonstration only</div>
       <div class="rank-row">
         <div class="rank-n">1</div>
-        <div class="rank-inner"><div class="rank-name">Pedro Santos · U8 · Gold Coast</div><div class="rank-track"><div class="rank-fill" style="width:97%"></div></div></div>
+        <div class="rank-inner"><div class="rank-name">Player A · synthetic</div><div class="rank-track"><div class="rank-fill" style="width:97%"></div></div></div>
         <div class="rank-score">9.7</div>
       </div>
       <div class="rank-row">
         <div class="rank-n">2</div>
-        <div class="rank-inner"><div class="rank-name">James Silva · U10 · Sydney</div><div class="rank-track"><div class="rank-fill" style="width:89%"></div></div></div>
+        <div class="rank-inner"><div class="rank-name">Player B · synthetic</div><div class="rank-track"><div class="rank-fill" style="width:89%"></div></div></div>
         <div class="rank-score">8.9</div>
       </div>
       <div class="rank-row">
         <div class="rank-n">3</div>
-        <div class="rank-inner"><div class="rank-name">Mia Torres · U12 · Sydney</div><div class="rank-track"><div class="rank-fill" style="width:82%"></div></div></div>
+        <div class="rank-inner"><div class="rank-name">Player C · synthetic</div><div class="rank-track"><div class="rank-fill" style="width:82%"></div></div></div>
         <div class="rank-score">8.2</div>
       </div>
       <div class="rank-row">
         <div class="rank-n">4</div>
-        <div class="rank-inner"><div class="rank-name">Noah Chen · U10 · Gold Coast</div><div class="rank-track"><div class="rank-fill" style="width:75%"></div></div></div>
+        <div class="rank-inner"><div class="rank-name">Player D · synthetic</div><div class="rank-track"><div class="rank-fill" style="width:75%"></div></div></div>
         <div class="rank-score">7.5</div>
       </div>
-      <p style="font-size:10px;color:var(--gray);margin-top:12px;line-height:1.6">Score = technical 50% + attendance 20% + attitude 30%<br>Ranks <em>growth rate</em>, not absolute skill.</p>
+      <p style="font-size:10px;color:var(--gray);margin-top:12px;line-height:1.6">Illustrative weighting only. Attendance and subjective ratings can encode bias.<br>Never use this score for automatic selection.</p>
     </div>
     <div>
-      <div class="tcol-title">Business impact</div>
+      <div class="tcol-title">Required safeguards</div>
       <div class="ins-list">
         <div class="ins" onclick="t(this)">
-          <div class="ins-h"><div class="ins-tag">Coach</div><div class="ins-teaser">Spots rising talent early</div><div class="ins-arr">▾</div></div>
-          <div class="ins-b">The algorithm ranks growth trajectory, not current level — the same principle Brentford FC used to buy Ollie Watkins for £1.8M and sell for £28M. The goal is to find value before the market does.</div>
+          <div class="ins-h"><div class="ins-tag">Coach</div><div class="ins-teaser">Reviews components and context</div><div class="ins-arr">▾</div></div>
+          <div class="ins-b">Show the observations behind a score, missing data and changes over time. A coach remains responsible for interpretation.</div>
         </div>
         <div class="ins" onclick="t(this)">
-          <div class="ins-h"><div class="ins-tag">Parents</div><div class="ins-teaser">Credible referrals to bigger clubs</div><div class="ins-arr">▾</div></div>
-          <div class="ins-b">When an ex-student gets into a regional club with a documented development report, the academy builds a reputation that spreads organically — the most effective marketing in a local sports community.</div>
+          <div class="ins-h"><div class="ins-tag">Guardian</div><div class="ins-teaser">Can question and correct a record</div><div class="ins-arr">▾</div></div>
+          <div class="ins-b">A real workflow needs a clear correction process and must explain why information was collected and who can see it.</div>
         </div>
         <div class="ins" onclick="t(this)">
-          <div class="ins-h"><div class="ins-tag">Business</div><div class="ins-teaser">Data as competitive moat</div><div class="ins-arr">▾</div></div>
-          <div class="ins-b">75% of Premier League clubs have dedicated analytics teams in 2025. This project brings the same methodology to grassroots level — at zero cost — creating a competitive advantage no rival academy can easily replicate.</div>
+          <div class="ins-h"><div class="ins-tag">Academy</div><div class="ins-teaser">Audits fairness and access</div><div class="ins-arr">▾</div></div>
+          <div class="ins-b">Review outcomes across groups, document access controls and stop using a metric if it cannot be justified.</div>
         </div>
       </div>
     </div>
@@ -499,40 +502,40 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
      SLIDE 6 — TECH STACK
 ══════════════════════════════════════════════════ -->
 <div class="slide s6" data-i="5">
-  <div class="tag-dark">Technical Stack</div>
-  <h2 class="h2-dark">Built entirely with<br><em>free, production-grade tools.</em></h2>
+  <div class="tag-dark">Candidate Implementation Stack</div>
+  <h2 class="h2-dark">Tools to evaluate,<br><em>not a deployed system.</em></h2>
   <div class="stack-grid">
 
     <div class="stack-box" onclick="t(this)">
       <div class="sb-h">
-        <div><div class="sb-icon">🐍</div><div class="sb-title">Python Backend</div><div class="sb-sub">Data processing, PDF generation, email automation</div></div>
+        <div><div class="sb-icon">🐍</div><div class="sb-title">Offline Python Prototype</div><div class="sb-sub">Aggregate calculations and reviewed report drafts</div></div>
         <div class="sb-arr">▾</div>
       </div>
       <div class="sb-b">
         <div class="sb-chips"><span class="chip blue">pandas</span><span class="chip blue">gspread</span><span class="chip blue">reportlab</span><span class="chip blue">plotly</span><span class="chip blue">smtplib</span></div>
-        <div class="sb-detail">Reads data from Google Sheets via API, calculates averages per player per term, computes term-over-term deltas, generates PDFs with skill bars and comments, emails to parents. Fully automated — one command, all students.</div>
+        <div class="sb-detail">A future prototype could calculate aggregate trends and prepare a draft report. Distribution should remain a separate, approved step.</div>
       </div>
     </div>
 
     <div class="stack-box" onclick="t(this)">
       <div class="sb-h">
-        <div><div class="sb-icon">📊</div><div class="sb-title">Data Layer</div><div class="sb-sub">Google Sheets as live database with zero cost</div></div>
+        <div><div class="sb-icon">📊</div><div class="sb-title">Controlled Data Layer</div><div class="sb-sub">Access rules, consent and deletion before convenience</div></div>
         <div class="sb-arr">▾</div>
       </div>
       <div class="sb-b">
         <div class="sb-chips"><span class="chip green">Google Sheets</span><span class="chip green">JotForm</span><span class="chip green">Google Forms</span><span class="chip green">Apps Script</span></div>
-        <div class="sb-detail">JotForm enrolment → auto-sync to Sheets. Coach assessment form (Google Forms, mobile) → Sheets. Apps Script trigger: weekly email to owner listing at-risk students before the term ends.</div>
+        <div class="sb-detail">Forms and Sheets are candidate tools only. A real choice depends on privacy settings, account ownership, retention and the academy's obligations.</div>
       </div>
     </div>
 
     <div class="stack-box" onclick="t(this)">
       <div class="sb-h">
-        <div><div class="sb-icon">📈</div><div class="sb-title">Visualisation</div><div class="sb-sub">Interactive dashboards and Plotly charts</div></div>
+        <div><div class="sb-icon">📈</div><div class="sb-title">Aggregate Visualisation</div><div class="sb-sub">Operational patterns with minimum identification</div></div>
         <div class="sb-arr">▾</div>
       </div>
       <div class="sb-b">
         <div class="sb-chips"><span class="chip yellow">Looker Studio</span><span class="chip yellow">Plotly</span><span class="chip yellow">Chart.js</span><span class="chip yellow">HTML/CSS/JS</span></div>
-        <div class="sb-detail">Looker Studio reads live Sheets for the owner dashboard. Plotly generates club analytics visualisations. This pitch deck itself is a standalone HTML/CSS/JS interactive presentation — no libraries, no build step.</div>
+        <div class="sb-detail">The only implemented visualisation is this standalone HTML/CSS/JS deck. Looker Studio and Plotly remain proposed options.</div>
       </div>
     </div>
 
@@ -540,47 +543,47 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 </div>
 
 <!-- ══════════════════════════════════════════════════
-     SLIDE 7 — IMPACT
+     SLIDE 7 — VALIDATION
 ══════════════════════════════════════════════════ -->
 <div class="slide s7" data-i="6">
-  <div class="tag">Measured Impact · Demo Academy</div>
-  <h2 class="h2">Numbers that justify<br><em>every line of code.</em></h2>
+  <div class="tag">Validation Plan · Before Any Pilot</div>
+  <h2 class="h2">Define success before<br><em>claiming an outcome.</em></h2>
   <div class="results-grid">
 
     <div class="res-box" onclick="t(this)">
       <div class="res-h">
-        <div class="res-stat"><div class="res-num">$0</div><div class="res-unit">tooling cost</div></div>
-        <div><div class="res-title">100% free stack</div><div class="res-teaser">Google Sheets, Looker Studio, Apps Script, Python open-source libraries.</div></div>
+        <div class="res-stat"><div class="res-num">1</div><div class="res-unit">data contract</div></div>
+        <div><div class="res-title">Scope every field</div><div class="res-teaser">Purpose, owner, access, retention and correction process.</div></div>
         <div class="res-arr">▾</div>
       </div>
-      <div class="res-b">Every tool in the stack is free. The only cost is implementation time. Comparable SaaS solutions (Hudl, Sports Engine) charge $200–800/month. This project delivers equivalent core features at zero ongoing cost.</div>
+      <div class="res-b">Do not collect a field until the academy can explain why it is needed, who sees it and when it will be deleted.</div>
     </div>
 
     <div class="res-box" onclick="t(this)">
       <div class="res-h">
-        <div class="res-stat"><div class="res-num">2wk</div><div class="res-unit">to first result</div></div>
-        <div><div class="res-title">Fast time-to-value</div><div class="res-teaser">Live dashboard running in under 2 weeks from kickoff.</div></div>
+        <div class="res-stat"><div class="res-num">100%</div><div class="res-unit">synthetic first</div></div>
+        <div><div class="res-title">Test without child data</div><div class="res-teaser">Validate calculations and access using generated records.</div></div>
         <div class="res-arr">▾</div>
       </div>
-      <div class="res-b">Week 1: JotForm → Sheets integration + Looker Studio dashboard. Week 2: coach assessment form + at-risk alert. End of term: first automated PDF batch sent to parents. Minimal disruption to operations.</div>
+      <div class="res-b">A technical prototype can be evaluated with synthetic records before requesting consent or connecting an external service.</div>
     </div>
 
     <div class="res-box" onclick="t(this)">
       <div class="res-h">
-        <div class="res-stat"><div class="res-num">74%</div><div class="res-unit">renewal rate</div></div>
-        <div><div class="res-title">Retention improvement</div><div class="res-teaser">Demo academy saw renewal increase after introducing parent PDF reports.</div></div>
+        <div class="res-stat"><div class="res-num">0</div><div class="res-unit">automatic decisions</div></div>
+        <div><div class="res-title">Keep people accountable</div><div class="res-teaser">Reports, alerts and scores require an authorised reviewer.</div></div>
         <div class="res-arr">▾</div>
       </div>
-      <div class="res-b">When parents receive a personalised PDF showing their child's improvement, the decision to renew becomes emotional and data-driven at the same time. The report creates a narrative of progress that transcends price sensitivity.</div>
+      <div class="res-b">The system should help staff inspect evidence. It should not decide selection, safeguarding action or family communication.</div>
     </div>
 
     <div class="res-box" onclick="t(this)">
       <div class="res-h">
-        <div class="res-stat"><div class="res-num">3min</div><div class="res-unit">per session</div></div>
-        <div><div class="res-title">Coach overhead</div><div class="res-teaser">The entire data collection process takes 3 minutes on a phone after training.</div></div>
+        <div class="res-stat"><div class="res-num">4</div><div class="res-unit">review questions</div></div>
+        <div><div class="res-title">Check usefulness and harm</div><div class="res-teaser">Accuracy, usability, fairness and privacy.</div></div>
         <div class="res-arr">▾</div>
       </div>
-      <div class="res-b">Google Form with 11 skill sliders (1–10) + one text comment field. Mobile-optimised. Coach rates each player in under 3 minutes. No extra workload — just a phone instead of a notepad. Adoption rate: near 100% in pilot.</div>
+      <div class="res-b">Ask whether the workflow improves record quality, fits coaching practice, treats groups fairly and limits exposure of personal information.</div>
     </div>
 
   </div>
@@ -591,44 +594,37 @@ html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg);
 ══════════════════════════════════════════════════ -->
 <div class="slide s8" data-i="7">
   <div class="close-stripe"></div>
-  <div class="tag" style="--accent:#3B82F6">Portfolio · Open Source</div>
-  <h1 class="close-h1">Want to see<br>the <em>code?</em></h1>
+  <div class="tag" style="--accent:#3B82F6">Portfolio · Concept Deck</div>
+  <h1 class="close-h1">Review the scope,<br>then <em>build carefully.</em></h1>
   <div class="close-links">
-    <a class="close-link primary" href="#">⭐ GitHub Repository</a>
-    <a class="close-link" href="#">LinkedIn Profile</a>
-    <a class="close-link" href="#">Live Demo</a>
+    <a class="close-link primary" href="https://github.com/Willian-Yudy-F/football-academy-analytics">GitHub Repository</a>
+    <a class="close-link" href="https://www.linkedin.com/in/willian-yudy-futema/">LinkedIn Profile</a>
+    <a class="close-link" href="https://willian-yudy-f.github.io/football-academy-analytics/football_academy_analytics_demo.html">Live Demo</a>
   </div>
-  <p class="close-sub">Full source code available on GitHub — Python scripts, Google Sheets templates, Looker Studio config and this interactive pitch deck. Feel free to fork, adapt and contribute.</p>
+  <p class="close-sub">This repository currently contains the interactive deck only. The proposed data pipeline and reports remain future work and should begin with synthetic data.</p>
   <div class="tech-row">
-    <span class="chip blue">Python</span>
-    <span class="chip blue">pandas</span>
-    <span class="chip blue">plotly</span>
-    <span class="chip blue">reportlab</span>
-    <span class="chip green">gspread</span>
-    <span class="chip green">Google Sheets API</span>
-    <span class="chip yellow">Looker Studio</span>
     <span class="chip yellow">HTML/CSS/JS</span>
+    <span class="chip green">Synthetic examples</span>
+    <span class="chip blue">Privacy by design</span>
   </div>
   <div style="margin-top:20px;font-size:11px;color:rgba(255,255,255,.25)">
-    Willian Yudy Futema · IT Student · 2025
+    Willian Yudy Futema · Bachelor of IT Student · 2026
   </div>
 </div>
+</main>
 
 <script>
-// Cursor
-const cur=document.getElementById('cur'),ring=document.getElementById('ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; cur.style.left=mx-5+'px'; cur.style.top=my-5+'px'; });
-(function a(){ rx+=(mx-rx-16)*.1; ry+=(my-ry-16)*.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(a); })();
-
 // Slides
 const slides=document.querySelectorAll('.slide'), N=slides.length;
 let curr=0,locked=false;
 document.getElementById('ct').textContent=N;
 const dotsEl=document.getElementById('dots');
 for(let i=0;i<N;i++){
-  const d=document.createElement('div');
+  slides[i].setAttribute('aria-hidden', i===0 ? 'false' : 'true');
+  const d=document.createElement('button');
+  d.type='button';
   d.className='dot'+(i===0?' active':'');
+  d.setAttribute('aria-label',`Go to slide ${i+1}`);
   d.onclick=()=>go(i);
   dotsEl.appendChild(d);
 }
@@ -637,14 +633,16 @@ function go(n){
   locked=true;
   slides[curr].classList.remove('active');
   slides[curr].classList.add('prev');
+  slides[curr].setAttribute('aria-hidden','true');
   setTimeout(()=>slides[curr].classList.remove('prev'),550);
   curr=n;
   slides[curr].classList.add('active');
+  slides[curr].setAttribute('aria-hidden','false');
   document.getElementById('prog').style.width=((curr+1)/N*100)+'%';
   document.getElementById('cn').textContent=curr+1;
   document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===curr));
   if(curr===2) setTimeout(()=>{
-    anim('kpi1',94,''); anim('kpi2',74,'%'); anim('kpi3',7,''); anim('kpi4',29,'k');
+    anim('kpi1',94,''); anim('kpi2',74,'%'); anim('kpi3',7,''); anim('kpi4',91,'%');
   },300);
   setTimeout(()=>locked=false,600);
 }
@@ -663,7 +661,19 @@ document.body.addEventListener('click',e=>{
 });
 
 // Expandable
-function t(el){ el.classList.toggle('open'); }
+const expandableSelector='.pain-box,.ri,.ins,.stack-box,.res-box';
+document.querySelectorAll(expandableSelector).forEach(el=>{
+  el.setAttribute('role','button');
+  el.setAttribute('tabindex','0');
+  el.setAttribute('aria-expanded','false');
+  el.addEventListener('keydown',event=>{
+    if(event.key==='Enter'||event.key===' '){ event.preventDefault(); t(el); }
+  });
+});
+function t(el){
+  const isOpen=el.classList.toggle('open');
+  el.setAttribute('aria-expanded',String(isOpen));
+}
 </script>
 </body>
 </html>
